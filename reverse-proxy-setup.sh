@@ -34,13 +34,13 @@ EOF
     ;;
     2)
         echo "Bitte gebe die gewuenschte IP fuer den Reverse-Proxy ein:"
-        read -r "IP: " ip
+        read -rp "IP: " ip
         echo "Bitte gebe die gewuenschte Subnetzmaske ein:"
-        read -r "Subnetz: " subnet
+        read -rp "Subnetz: " subnet
         echo "Bitte gebe das gewuenschte Gateway ein:"
-        read -r "Gateway: " gateway
+        read -rp "Gateway: " gateway
         echo "Bitte gebe den gewuenschten lokalen DNS ein:"
-        read -r "DNS: " dns
+        read -rp "DNS: " dns
         tee -a "/etc/network/interfaces" > /dev/null <<EOF
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
@@ -67,15 +67,16 @@ EOF
 esac
 
 echo "Bitte gebe den gewuenschten FQDN ein:"
-read -r "FQDN: " fqdn
+read -rp "FQDN: " fqdn
 echo "Bitte gebe die gewünschte Ziel-IP-Adresse für die Weiterleitung ein:"
-read -r "Ziel-IP: " webserver
+read -rp "Ziel-IP: " webserver
 echo "Bitte gebe den gewünschten Ziel-Port für die Weiterleitung ein:"
-read -r "Ziel-Port: " port
+read -rp "Ziel-Port: " port
 a2enmod rewrite
 a2enmod headers
 a2enmod proxy
 a2enmod proxy_http
+systemctl restart apache2
 mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/"$fqdn".conf
 tee -a "/etc/network/interfaces" > /dev/null <<EOF
 <VirtualHost *:443>
