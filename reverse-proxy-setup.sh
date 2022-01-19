@@ -1,5 +1,5 @@
 #!/bin/bash
-apt install -y htop wim curl git openssh-client openssl apache2 snapd ufw
+apt install -y htop vim curl git openssh-client openssl apache2 snapd ufw
 snap install core
 snap refresh core
 snap install --classic certbot
