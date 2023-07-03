@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/bash
 read -p "Enter [1] to create an RSA private key, and [2] to create CSR file using an existing key:  " menu
 if [ $menu = 1 ]
     then
