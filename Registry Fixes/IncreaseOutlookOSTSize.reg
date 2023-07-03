@@ -1,0 +1,5 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Office\16.0\Outlook\PST]
+"MaxLargeFileSize"=dword:00019000
+"WarnLargeFileSize"=dword:00019000
