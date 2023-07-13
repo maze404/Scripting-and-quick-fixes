@@ -7,3 +7,5 @@ Just a place for all my scripts and random stuff I create. Most of them just hav
 2. <b>[BASH] NewUserScript:</b> A simple script for adding a new user in Ubuntu/Debian.
 
 3. <b>[BASH] SSL-CSR-Creation:</b> A script that makes it easier to create a SSL CSR file and a RSA private key with either 2048 or 4096 bits. 
+
+4. Gameserver Setup: A script for quickly setting up a minecraft focussed gameserver with a webpanel on debian using pufferpanel and apache2. The script also configures the necessary firewall rules and has an option to prepare the server to work with offsite backups using rclone, onedrive and browsh (manual configuration is necessary for this!). A public IP and a DNS record are recommended.
