@@ -2,11 +2,20 @@
 # GSS Script - Gameserver Setup: Simply download after installing debian on a machine and this script will do the rest!
 # Warning: This script assumes the user to be root or have root rights!
 
+#General Variables
+work="\e[44;97m[WORK]\e[39;49;1m"
+done="\e[1A\e[42;30m[DONE]\e[39;49;1m"
+error="\e[41;97;1m[ERROR]"
+warning="\e[103;30;1m[WARNING]\e[39;49;1m"
+text="\e[107;90m"
+reset="\e[0m"
+stretchToEol="\x1B[K"
+
 #Check if the system is debian or debian-based
 if [[ $(lsb_release -d | grep -o "Debian") ]]; then
-    echo "OS Type is Debian-based."
+    echo -e $text"OS Type is Debian-based."$stretchToEol $reset
 else
-    echo "The operating system is not Debian, aborting!"
+    echo -e $error "The operating system is not Debian, aborting!"$stretchToEol $reset
     exit 1
 fi
 
@@ -17,15 +26,17 @@ else
   if grep -q "$USER" /etc/sudoers; then
     su=sudo
   else
-    echo "You do not have sudo rights!"
+    echo -e $error "You do not have sudo rights!"$stretchToEol $reset
     exit 1
   fi
 fi
 
 #Install updates and basic tools
-$su apt update -y
-$su apt upgrade -y 
-$su apt install -y vim wget htop git curl apache2 zip unzip ufw net-tools certbot
+echo $work "Updating packages and downloading basic tools..."$stretchToEol $reset
+$su apt update -y >> /dev/null 2>&1 
+$su apt upgrade -y >> /dev/null 2>&1 
+$su apt install -y vim wget htop git curl apache2 zip unzip ufw net-tools certbot >> /dev/null 2>&1 
+echo $done "Updating packages and downloading basic tools..."$stretchToEol $reset
 
 #Enable root login over ssh and set the port to 2222 for security reasons
 $su sed -i 's/PermitRootLogin no/PermitRootLogin yes/g' /etc/ssh/sshd_config
@@ -34,7 +45,7 @@ $su service ssh restart
 
 #Install Pufferpanel
 if [[ $(lsb_release -d | grep -o "Debian GNU/Linux 12") ]]; then
-curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | sudo os=ubuntu dist=jammy bash
+curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su os=debian dist=bullseye bash
 elif [[ $(lsb_release -d | grep -o "Debian GNU/Linux 11") ]]; then
 curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su bash
 fi
@@ -57,13 +68,13 @@ $su add-apt-repository ppa:openjdk-r/ppa
 $su apt update
 $su apt install openjdk-17-jdk -y
 if [[ $(java -version 2>&1 | grep "openjdk version") ]]; then
-  echo "Installed java version is Java $(java -version 2>&1 | head -1 | cut -d '"' -f2)"
+  echo -e $text"Installed java version is Java $(java -version 2>&1 | head -1 | cut -d '"' -f2)"$stretchToEol $reset
 else
-  echo "Something went wrong during the installation of Java 17, aborting!"
+  echo -e $error "Something went wrong during the installation of Java 17, aborting!"$stretchToEol $reset
   exit 1
 fi
 
-echo "Would you like to configure the webserver? (Requires DNS Record!) (y/N)"
+echo -e "Would you like to configure the webserver? ($warning Requires DNS Record!$reset) (y/N)"
 read -rp "Press Enter for default (y): " answer3
 answer3=${answer3:-y}
 $su a2enmod proxy
@@ -72,7 +83,7 @@ $su a2enmod proxy_balancer
 $su a2enmod lbmethod_byrequests
 $su systemctl restart apache2
 if [[ $answer3 =~ "y" ]]; then
-    echo "Would you like to enable SSL for the Webpanel? (y/N)"
+    echo -e "Would you like to enable SSL for the Webpanel? (y/N)"
     read -rp "Press Enter for default (y): " answer2
     answer2=${answer2:-y}
     if [[ $answer2 =~ "y" ]]; then
@@ -124,22 +135,22 @@ fi
 
 
 #Optional configuration for rclone and onedrive:
-echo "Warning: This is only for advanced users as this is not fully automatable!"
-echo "Would you like to install all necessary packages for offsite server backups using onedrive? (y/N)"
+echo -e "$warning This is only for advanced users as this is not fully automatable!$stretchToEol $reset"
+echo -e "Would you like to install all necessary packages for offsite server backups using onedrive? (y/N)"
 read -rp "Press Enter for default (y): " answer0
 answer0=${answer0:-y}
 if [[ $answer0 =~ "y" ]]; then
-  echo "Please follow the instructions listed in this article starting at step 3: https://itsfoss.com/use-onedrive-linux-rclone/"
+  echo -e "Please follow the instructions listed in this article starting at step 3: https://itsfoss.com/use-onedrive-linux-rclone/"
   apt install rclone firefox firefox-esr browsh -y
-  echo "Done. You can use browsh [onedrive login link] to connect your microsoft account to rclone!"
+  echo -e "Done. You can use browsh [onedrive login link] to connect your microsoft account to rclone!"
   mkdir /root/onedrive
-  echo "Created new directory /root/onedrive for usage in rclone."
-  echo "The script will end here for further configuration of rclone."
+  echo -e "Created new directory /root/onedrive for usage in rclone."
+  echo -e "The script will end here for further configuration of rclone."
   exit 0
 fi
 
-echo "Warning: The following only works if you have installed rclone and configured it to be used with onedrive!"
-echo "Would you like to configure rclone to be run at startup and auto-connect? (y/N)"
+echo -e "$warning The following only works if you have installed rclone and configured it to be used with onedrive!$stretchToEol $reset"
+echo -e "Would you like to configure rclone to be run at startup and auto-connect? (y/N)"
 read -rp "Press Enter for default (y): " answer1
 answer1=${answer1:-y}
 if [[ $answer1 =~ "y" ]]; then
@@ -165,7 +176,7 @@ EOF
 systemctl start rclonemount 
 status=$(systemctl status rclonemount.service | grep -E "Active: (failed|dead)")
     if [[ "$status" == "Active: failed" ]]; then
-      echo "The rclonemount.service was unable to start, please check the rclone config!"
+      echo -e $error "The rclonemount.service was unable to start, please check the rclone config!"$stretchToEol $reset
       exit 1
     else
       systemctl enable rclonemount.service
