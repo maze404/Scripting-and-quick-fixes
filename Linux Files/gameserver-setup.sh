@@ -35,7 +35,7 @@ fi
 echo -e $work "Updating packages and downloading basic tools..."$stretchToEol $reset
 $su apt update -y >> /dev/null 2>&1 
 $su apt upgrade -y >> /dev/null 2>&1 
-$su apt install -y vim wget htop git curl apache2 zip unzip ufw net-tools certbot >> /dev/null 2>&1 
+$su apt install -y vim wget htop git curl apache2 zip unzip ufw net-tools certbot software-properties-common >> /dev/null 2>&1 
 echo -e $done "Updating packages and downloading basic tools..."$stretchToEol $reset
 
 #Enable root login over ssh and set the port to 2222 for security reasons
@@ -71,9 +71,9 @@ echo -e $done "Configuring the firewall..."$stretchToEol $reset
 
 #Install Java 17 for minecraft servers
 echo -e $work "Installing Java 17..."$stretchToEol $reset
-$su add-apt-repository ppa:openjdk-r/ppa
-$su apt update
-$su apt install openjdk-17-jdk -y
+#$su add-apt-repository ppa:openjdk-r/ppa >> /dev/null 2>&1 <<<<<<<<<<<<<<< This is probably not necessary so it is commented out.
+$su apt update >> /dev/null 2>&1 
+$su apt install openjdk-17-jdk -y >> /dev/null 2>&1 
 if [[ $(java -version 2>&1 | grep "openjdk version") ]]; then
   echo -e $text"Installed java version is Java $(java -version 2>&1 | head -1 | cut -d '"' -f2)"$stretchToEol $reset
 else
@@ -85,12 +85,12 @@ echo -e $done "Installing Java 17..."$stretchToEol $reset
 echo -e "Would you like to configure the webserver? ($warning Requires DNS Record!$reset) (y/N)"
 read -rp "Press Enter for default (y): " answer3
 answer3=${answer3:-y}
-$su a2enmod proxy
-$su a2enmod proxy_http
-$su a2enmod proxy_balancer
-$su a2enmod lbmethod_byrequests
-$su systemctl restart apache2
 if [[ $answer3 =~ "y" ]]; then
+  $su a2enmod proxy
+  $su a2enmod proxy_http
+  $su a2enmod proxy_balancer
+  $su a2enmod lbmethod_byrequests
+  $su systemctl restart apache2
     echo -e "Would you like to enable SSL for the Webpanel? (y/N)"
     read -rp "Press Enter for default (y): " answer2
     answer2=${answer2:-y}
