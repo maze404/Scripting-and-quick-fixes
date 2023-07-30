@@ -82,8 +82,8 @@ else
 fi
 echo -e $done "Installing Java 17..."$stretchToEol $reset
 
-echo -e "Would you like to configure the webserver? ($warning Requires DNS Record!$reset) (y/N)"
-read -rp "Press Enter for default (y): " answer3
+echo -e $text"Would you like to configure the webserver? ($warning Requires DNS Record!$reset) (y/N)"$stretchToEol $reset
+read -rp $text"Press Enter for default (y): "$reset answer3
 answer3=${answer3:-y}
 if [[ $answer3 =~ "y" ]]; then
   $su a2enmod proxy
@@ -92,10 +92,10 @@ if [[ $answer3 =~ "y" ]]; then
   $su a2enmod lbmethod_byrequests
   $su systemctl restart apache2
     echo -e "Would you like to enable SSL for the Webpanel? (y/N)"
-    read -rp "Press Enter for default (y): " answer2
+    read -rp $text"Press Enter for default (y): "$reset answer2
     answer2=${answer2:-y}
     if [[ $answer2 =~ "y" ]]; then
-      read -rp "Please input the FQDN for the webpanel: " fqdn 
+      read -rp $text"Please input the FQDN for the webpanel: "$reset fqdn 
       cat << EOF | tee -a /etc/apache2/sites-available/"$fqdn".conf
 <VirtualHost *:80>
         ServerName $fqdn
@@ -126,7 +126,7 @@ if [[ $answer3 =~ "y" ]]; then
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 EOF
     else
-      read -rp "Please input the FQDN for the webpanel: " fqdn 
+      read -rp $text"Please input the FQDN for the webpanel: "$reset fqdn 
       cat << EOF | tee -a /etc/apache2/sites-available/"$fqdn".conf
 <VirtualHost *:80>
     ServerName $fqdn
