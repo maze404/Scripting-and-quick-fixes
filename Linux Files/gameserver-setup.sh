@@ -3,7 +3,9 @@
 # Warning: This script assumes the user to be root or have root rights!
 
 #Check if the system is debian or debian-based
-if [[ $(lsb_release -d | grep "Debian") ]]; then
+if [[ $(lsb_release -d | grep -o "Debian") == "Debian" ]]; then
+    echo "OS Type is Debian-based."
+else
     echo "The operating system is not Debian, aborting!"
     exit 1
 fi
