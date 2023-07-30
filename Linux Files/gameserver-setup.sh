@@ -53,14 +53,14 @@ $su add-apt-repository ppa:openjdk-r/ppa
 $su apt update
 $su apt install openjdk-17-jdk -y
 if [[ $(java -version 2>&1 | grep "openjdk version") ]]; then
-  echo "Installed java version is Java " + "$(java -version 2>&1 | head -1 | cut -d '"' -f2)"
+  echo "Installed java version is Java $(java -version 2>&1 | head -1 | cut -d '"' -f2)"
 else
   echo "Something went wrong during the installation of Java 17, aborting!"
   exit 1
 fi
 
 echo "Would you like to configure the webserver? (Requires DNS Record!) (y/N)"
-read -rp "Press Enter for default (y): "
+read -rp "Press Enter for default (y): " answer3
 answer3=${answer3:-y}
 $su a2enmod proxy
 $su a2enmod proxy_http
@@ -69,7 +69,7 @@ $su a2enmod lbmethod_byrequests
 $su systemctl restart apache2
 if [[ $answer3 =~ "y" ]]; then
     echo "Would you like to enable SSL for the Webpanel? (y/N)"
-    read -rp "Press Enter for default (y): "
+    read -rp "Press Enter for default (y): " answer2
     answer2=${answer2:-y}
     if [[ $answer2 =~ "y" ]]; then
       read -rp "Please input the FQDN for the webpanel: " fqdn 
@@ -122,7 +122,7 @@ fi
 #Optional configuration for rclone and onedrive:
 echo "Warning: This is only for advanced users as this is not fully automatable!"
 echo "Would you like to install all necessary packages for offsite server backups using onedrive? (y/N)"
-read -rp "Press Enter for default (y): "
+read -rp "Press Enter for default (y): " answer0
 answer0=${answer0:-y}
 if [[ $answer0 =~ "y" ]]; then
   echo "Please follow the instructions listed in this article starting at step 3: https://itsfoss.com/use-onedrive-linux-rclone/"
@@ -136,7 +136,7 @@ fi
 
 echo "Warning: The following only works if you have installed rclone and configured it to be used with onedrive!"
 echo "Would you like to configure rclone to be run at startup and auto-connect? (y/N)"
-read -rp "Press Enter for default (y): "
+read -rp "Press Enter for default (y): " answer1
 answer1=${answer1:-y}
 if [[ $answer1 =~ "y" ]]; then
   cat << EOF | tee -a /etc/systemd/system/rclonemount.service
