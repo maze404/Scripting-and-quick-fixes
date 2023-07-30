@@ -5,6 +5,7 @@
 #General Variables
 work="\e[44;97m[WORK]\e[39;49;1m"
 done="\e[1A\e[42;30m[DONE]\e[39;49;1m"
+done0="\e[0A\e[42;30m[DONE]\e[39;49;1m"
 done2="\e[2A\e[42;30m[DONE]\e[39;49;1m"
 error="\e[41;97;1m[ERROR]"
 warning="\e[103;30;1m[WARNING]\e[39;49;1m"
@@ -13,6 +14,8 @@ readtext=$'\e[107;90m'
 reset="\e[0m"
 readreset=$'\e[0m'
 stretchToEol="\x1B[K"
+
+clear
 
 #Check if the system is debian or debian-based
 if [[ $(lsb_release -d | grep "Debian") ]]; then
@@ -149,7 +152,7 @@ fi
 
 #Optional configuration for rclone and onedrive:
 echo -e "$warning This is only for advanced users as this is not fully automatable!$stretchToEol $reset"
-echo -e "Would you like to install all necessary packages for offsite server backups using onedrive? (y/N)"
+echo -e $text"Would you like to install all necessary packages for offsite server backups using onedrive? (y/N)"$stretchToEol $reset
 read -rp $readtext"Press Enter for default (y): "$readreset answer0
 answer0=${answer0:-y}
 if [[ $answer0 =~ "y" ]]; then
@@ -163,7 +166,7 @@ if [[ $answer0 =~ "y" ]]; then
 fi
 
 echo -e "$warning The following only works if you have installed rclone and configured it to be used with onedrive!$stretchToEol $reset"
-echo -e "Would you like to configure rclone to be run at startup and auto-connect? (y/N)"
+echo -e $text "Would you like to configure rclone to be run at startup and auto-connect? (y/N)" $stretchToEol $reset
 read -rp $readtext"Press Enter for default (y): "$readreset answer1
 answer1=${answer1:-y}
 if [[ $answer1 =~ "y" ]]; then
@@ -196,3 +199,5 @@ status=$(systemctl status rclonemount.service | grep -E "Active: (failed|dead)")
       systemctl daemon-reload
     fi
 fi
+clear
+echo $done0 "The script has finished the setup successsfully."
