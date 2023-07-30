@@ -12,7 +12,7 @@ reset="\e[0m"
 stretchToEol="\x1B[K"
 
 #Check if the system is debian or debian-based
-if [[ $(lsb_release -d | grep -o "Debian") ]]; then
+if [[ $(lsb_release -d | grep "Debian") ]]; then
     echo -e $text"OS Type is Debian-based."$stretchToEol $reset
 else
     echo -e $error "The operating system is not Debian, aborting!"$stretchToEol $reset
@@ -32,11 +32,11 @@ else
 fi
 
 #Install updates and basic tools
-echo $work "Updating packages and downloading basic tools..."$stretchToEol $reset
+echo -e $work "Updating packages and downloading basic tools..."$stretchToEol $reset
 $su apt update -y >> /dev/null 2>&1 
 $su apt upgrade -y >> /dev/null 2>&1 
 $su apt install -y vim wget htop git curl apache2 zip unzip ufw net-tools certbot >> /dev/null 2>&1 
-echo $done "Updating packages and downloading basic tools..."$stretchToEol $reset
+echo -e $done "Updating packages and downloading basic tools..."$stretchToEol $reset
 
 #Enable root login over ssh and set the port to 2222 for security reasons
 $su sed -i 's/PermitRootLogin no/PermitRootLogin yes/g' /etc/ssh/sshd_config
@@ -44,9 +44,9 @@ $su sed -i 's/Port 22/Port 2222/g' /etc/ssh/sshd_config
 $su service ssh restart
 
 #Install Pufferpanel
-if [[ $(lsb_release -d | grep -o "Debian GNU/Linux 12") ]]; then
+if [[ $(lsb_release -d | grep "Debian GNU/Linux 12") ]]; then
 curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su os=debian dist=bullseye bash
-elif [[ $(lsb_release -d | grep -o "Debian GNU/Linux 11") ]]; then
+elif [[ $(lsb_release -d | grep "Debian GNU/Linux 11") ]]; then
 curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su bash
 fi
 $su apt-get install pufferpanel
@@ -55,13 +55,13 @@ $su pufferpanel user add
 $su systemctl enable --now pufferpanel
 
 #Add rules to ufw
-$su ufw allow 80/tcp
-$su ufw allow 8080/tcp
-$su ufw allow 443/tcp
-$su ufw allow 25565/tcp
-$su ufw allow 5657/tcp
-$su ufw allow 2222/tcp
-$su ufw enable
+$su ufw allow 80/tcp >> /dev/null 2>&1 
+$su ufw allow 8080/tcp >> /dev/null 2>&1 
+$su ufw allow 443/tcp >> /dev/null 2>&1 
+$su ufw allow 25565/tcp >> /dev/null 2>&1 
+$su ufw allow 5657/tcp >> /dev/null 2>&1 
+$su ufw allow 2222/tcp >> /dev/null 2>&1 
+$su ufw enable >> /dev/null 2>&1 
 
 #Install Java 17 for minecraft servers
 $su add-apt-repository ppa:openjdk-r/ppa
