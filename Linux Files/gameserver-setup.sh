@@ -3,7 +3,7 @@
 # Warning: This script assumes the user to be root or have root rights!
 
 #Check if the system is debian or debian-based
-if [[ $(lsb_release -d | grep -o "Debian") == "Debian" ]]; then
+if [[ $(lsb_release -d | grep -o "Debian") ]]; then
     echo "OS Type is Debian-based."
 else
     echo "The operating system is not Debian, aborting!"
@@ -33,7 +33,11 @@ $su sed -i 's/Port 22/Port 2222/g' /etc/ssh/sshd_config
 $su service ssh restart
 
 #Install Pufferpanel
+if [[ $(lsb_release -d | grep -o "Debian GNU/Linux 12") ]]; then
+curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | sudo os=ubuntu dist=jammy bash
+elif [[ $(lsb_release -d | grep -o "Debian GNU/Linux 11") ]]; then
 curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su bash
+fi
 $su apt-get install pufferpanel
 $su systemctl enable pufferpanel
 $su pufferpanel user add
