@@ -5,6 +5,7 @@
 #General Variables
 work="\e[44;97m[WORK]\e[39;49;1m"
 done="\e[1A\e[42;30m[DONE]\e[39;49;1m"
+done2="\e[2A\e[42;30m[DONE]\e[39;49;1m"
 error="\e[41;97;1m[ERROR]"
 warning="\e[103;30;1m[WARNING]\e[39;49;1m"
 text="\e[107;90m"
@@ -80,7 +81,7 @@ else
   echo -e $error "Something went wrong during the installation of Java 17, aborting!"$stretchToEol $reset
   exit 1
 fi
-echo -e $done "Installing Java 17..."$stretchToEol $reset
+echo -e $done2 "Installing Java 17..."$stretchToEol $reset
 
 echo -e $text"Would you like to configure the webserver? ($warning Requires DNS Record!$reset) (y/N)"$stretchToEol $reset
 read -rp $text"Press Enter for default (y): "$reset answer3
