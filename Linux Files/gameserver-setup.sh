@@ -49,7 +49,9 @@ echo -e $done "Enabling root login over ssh and set the port to 2222..."$stretch
 #Install Pufferpanel
 echo -e $work "Installing Pufferpanel..."$stretchToEol $reset
 if [[ $(lsb_release -d | grep "Debian GNU/Linux 12") ]]; then
-curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su os=debian dist=bullseye bash
+export os=debian
+export dist=bullseye
+curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su bash
 elif [[ $(lsb_release -d | grep "Debian GNU/Linux 11") ]]; then
 curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su bash
 fi
