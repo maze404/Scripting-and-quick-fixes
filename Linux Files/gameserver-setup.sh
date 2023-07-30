@@ -39,22 +39,27 @@ $su apt install -y vim wget htop git curl apache2 zip unzip ufw net-tools certbo
 echo -e $done "Updating packages and downloading basic tools..."$stretchToEol $reset
 
 #Enable root login over ssh and set the port to 2222 for security reasons
+echo -e $work "Enabling root login over ssh and set the port to 2222..."$stretchToEol $reset
 $su sed -i 's/PermitRootLogin no/PermitRootLogin yes/g' /etc/ssh/sshd_config
 $su sed -i 's/Port 22/Port 2222/g' /etc/ssh/sshd_config
 $su service ssh restart
+echo -e $done "Enabling root login over ssh and set the port to 2222..."$stretchToEol $reset
 
 #Install Pufferpanel
+echo -e $work "Installing Pufferpanel..."$stretchToEol $reset
 if [[ $(lsb_release -d | grep "Debian GNU/Linux 12") ]]; then
 curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su os=debian dist=bullseye bash
 elif [[ $(lsb_release -d | grep "Debian GNU/Linux 11") ]]; then
 curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su bash
 fi
-$su apt-get install pufferpanel
-$su systemctl enable pufferpanel
+$su apt-get install pufferpanel >> /dev/null 2>&1 
+$su systemctl enable pufferpanel >> /dev/null 2>&1 
 $su pufferpanel user add
-$su systemctl enable --now pufferpanel
+$su systemctl enable --now pufferpanel >> /dev/null 2>&1 
+echo -e $done "Installing Pufferpanel..."$stretchToEol $reset
 
 #Add rules to ufw
+echo -e $work "Configuring the firewall..."$stretchToEol $reset
 $su ufw allow 80/tcp >> /dev/null 2>&1 
 $su ufw allow 8080/tcp >> /dev/null 2>&1 
 $su ufw allow 443/tcp >> /dev/null 2>&1 
@@ -62,8 +67,10 @@ $su ufw allow 25565/tcp >> /dev/null 2>&1
 $su ufw allow 5657/tcp >> /dev/null 2>&1 
 $su ufw allow 2222/tcp >> /dev/null 2>&1 
 $su ufw enable >> /dev/null 2>&1 
+echo -e $done "Configuring the firewall..."$stretchToEol $reset
 
 #Install Java 17 for minecraft servers
+echo -e $work "Installing Java 17..."$stretchToEol $reset
 $su add-apt-repository ppa:openjdk-r/ppa
 $su apt update
 $su apt install openjdk-17-jdk -y
@@ -73,6 +80,7 @@ else
   echo -e $error "Something went wrong during the installation of Java 17, aborting!"$stretchToEol $reset
   exit 1
 fi
+echo -e $done "Installing Java 17..."$stretchToEol $reset
 
 echo -e "Would you like to configure the webserver? ($warning Requires DNS Record!$reset) (y/N)"
 read -rp "Press Enter for default (y): " answer3
