@@ -52,7 +52,9 @@ $su ufw enable
 $su add-apt-repository ppa:openjdk-r/ppa
 $su apt update
 $su apt install openjdk-17-jdk -y
-if [[ $(java -version | grep -E "openjdk version 17") == "" ]]; then
+if [[ $(java -version 2>&1 | grep "openjdk version") ]]; then
+  echo "Installed java version is Java " + "$(java -version 2>&1 | head -1 | cut -d '"' -f2)"
+else
   echo "Something went wrong during the installation of Java 17, aborting!"
   exit 1
 fi
