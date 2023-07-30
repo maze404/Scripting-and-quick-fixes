@@ -9,7 +9,9 @@ done2="\e[2A\e[42;30m[DONE]\e[39;49;1m"
 error="\e[41;97;1m[ERROR]"
 warning="\e[103;30;1m[WARNING]\e[39;49;1m"
 text="\e[107;90m"
+readtext=$'\e[107;90m'
 reset="\e[0m"
+readreset=$'\e[0m'
 stretchToEol="\x1B[K"
 
 #Check if the system is debian or debian-based
@@ -51,9 +53,9 @@ echo -e $work "Installing Pufferpanel..."$stretchToEol $reset
 if [[ $(lsb_release -d | grep "Debian GNU/Linux 12") ]]; then
 export os=debian
 export dist=bullseye
-curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su bash
+curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su bash >> /dev/null 2>&1 
 elif [[ $(lsb_release -d | grep "Debian GNU/Linux 11") ]]; then
-curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su bash
+curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | $su bash >> /dev/null 2>&1 
 fi
 $su apt-get install pufferpanel >> /dev/null 2>&1 
 $su systemctl enable pufferpanel >> /dev/null 2>&1 
@@ -86,7 +88,7 @@ fi
 echo -e $done2 "Installing Java 17..."$stretchToEol $reset
 
 echo -e $text"Would you like to configure the webserver? ($warning Requires DNS Record!$reset) (y/N)"$stretchToEol $reset
-read -rp $text"Press Enter for default (y): "$reset answer3
+read -rp $readtext"Press Enter for default (y): "$readreset answer3
 answer3=${answer3:-y}
 if [[ $answer3 =~ "y" ]]; then
   $su a2enmod proxy
@@ -95,10 +97,10 @@ if [[ $answer3 =~ "y" ]]; then
   $su a2enmod lbmethod_byrequests
   $su systemctl restart apache2
     echo -e "Would you like to enable SSL for the Webpanel? (y/N)"
-    read -rp $text"Press Enter for default (y): "$reset answer2
+    read -rp $readtext"Press Enter for default (y): "$readreset answer2
     answer2=${answer2:-y}
     if [[ $answer2 =~ "y" ]]; then
-      read -rp $text"Please input the FQDN for the webpanel: "$reset fqdn 
+      read -rp $readtext"Please input the FQDN for the webpanel: "$readreset fqdn 
       cat << EOF | tee -a /etc/apache2/sites-available/"$fqdn".conf
 <VirtualHost *:80>
         ServerName $fqdn
@@ -129,7 +131,7 @@ if [[ $answer3 =~ "y" ]]; then
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 EOF
     else
-      read -rp $text"Please input the FQDN for the webpanel: "$reset fqdn 
+      read -rp $readtext"Please input the FQDN for the webpanel: "$readreset fqdn 
       cat << EOF | tee -a /etc/apache2/sites-available/"$fqdn".conf
 <VirtualHost *:80>
     ServerName $fqdn
@@ -148,7 +150,7 @@ fi
 #Optional configuration for rclone and onedrive:
 echo -e "$warning This is only for advanced users as this is not fully automatable!$stretchToEol $reset"
 echo -e "Would you like to install all necessary packages for offsite server backups using onedrive? (y/N)"
-read -rp "Press Enter for default (y): " answer0
+read -rp $readtext"Press Enter for default (y): "$readreset answer0
 answer0=${answer0:-y}
 if [[ $answer0 =~ "y" ]]; then
   echo -e "Please follow the instructions listed in this article starting at step 3: https://itsfoss.com/use-onedrive-linux-rclone/"
@@ -162,7 +164,7 @@ fi
 
 echo -e "$warning The following only works if you have installed rclone and configured it to be used with onedrive!$stretchToEol $reset"
 echo -e "Would you like to configure rclone to be run at startup and auto-connect? (y/N)"
-read -rp "Press Enter for default (y): " answer1
+read -rp $readtext"Press Enter for default (y): "$readreset answer1
 answer1=${answer1:-y}
 if [[ $answer1 =~ "y" ]]; then
   cat << EOF | tee -a /etc/systemd/system/rclonemount.service
